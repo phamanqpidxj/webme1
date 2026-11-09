@@ -13,31 +13,33 @@
 
         html, body {
             width: 100%;
-            height: 100%;
+            min-height: 100%;
         }
 
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            --face-width: min(300px, 40vw, 45svh);
+            min-height: 100svh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 24px;
+            padding: 24px 16px;
+            text-align: center;
         }
 
         .container {
             perspective: 1200px;
             width: 100%;
-            height: 100vh;
+            min-height: calc(var(--face-width) * 1.8);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .lantern {
-            width: 300px;
-            height: 400px;
+            width: var(--face-width);
+            height: calc(var(--face-width) * 4 / 3);
             position: relative;
             transform-style: preserve-3d;
             animation: rotate 15s linear infinite;
@@ -58,8 +60,8 @@
 
         .face {
             position: absolute;
-            width: 300px;
-            height: 400px;
+            width: var(--face-width);
+            height: calc(var(--face-width) * 4 / 3);
             background-size: cover;
             background-position: center;
             border: 3px solid rgba(255, 255, 255, 0.3);
@@ -71,7 +73,6 @@
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
             transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
             overflow: hidden;
         }
 
@@ -87,80 +88,98 @@
 
         /* Positioning 6 faces around hexagon */
         .face:nth-of-type(1) {
-            transform: rotateY(0deg) translateZ(260px);
+            transform: rotateY(0deg) translateZ(calc(var(--face-width) * 0.8666667));
             background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
         }
 
         .face:nth-of-type(2) {
-            transform: rotateY(60deg) translateZ(260px);
+            transform: rotateY(60deg) translateZ(calc(var(--face-width) * 0.8666667));
             background: linear-gradient(45deg, #4ecdc4, #44a08d);
         }
 
         .face:nth-of-type(3) {
-            transform: rotateY(120deg) translateZ(260px);
+            transform: rotateY(120deg) translateZ(calc(var(--face-width) * 0.8666667));
             background: linear-gradient(45deg, #f7b731, #f39c12);
         }
 
         .face:nth-of-type(4) {
-            transform: rotateY(180deg) translateZ(260px);
+            transform: rotateY(180deg) translateZ(calc(var(--face-width) * 0.8666667));
             background: linear-gradient(45deg, #5f27cd, #341f97);
         }
 
         .face:nth-of-type(5) {
-            transform: rotateY(240deg) translateZ(260px);
+            transform: rotateY(240deg) translateZ(calc(var(--face-width) * 0.8666667));
             background: linear-gradient(45deg, #00d2ff, #3a7bd5);
         }
 
         .face:nth-of-type(6) {
-            transform: rotateY(300deg) translateZ(260px);
+            transform: rotateY(300deg) translateZ(calc(var(--face-width) * 0.8666667));
             background: linear-gradient(45deg, #fa8bff, #2bd2ff);
         }
 
         .title {
-            position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
             color: white;
-            font-size: 36px;
+            font-size: clamp(22px, 4vw, 36px);
             font-weight: bold;
             text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
 
         .instruction {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
+            justify-self: center;
+            max-width: 100%;
             color: white;
-            font-size: 18px;
+            font-size: clamp(16px, 2vw, 18px);
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
             z-index: 1000;
             background: rgba(0, 0, 0, 0.3);
-            padding: 15px 30px;
+            padding: 15px 20px;
             border-radius: 10px;
+        }
+
+        button {
+            display: block;
+            margin: 0 auto 12px;
+            min-height: 44px;
+            padding: 10px 24px;
+            border: 2px solid white;
+            border-radius: 8px;
+            background: white;
+            color: #45216b;
+            font: inherit;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:focus-visible {
+            outline: 3px solid #ffdf6e;
+            outline-offset: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .lantern { animation-play-state: paused; }
+            .lantern.playing { animation-play-state: running; }
         }
 
         /* Light effect */
         .light {
             position: absolute;
-            top: -100px;
+            top: -48px;
             left: 50%;
             transform: translateX(-50%);
             width: 2px;
-            height: 100px;
+            height: 48px;
             background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), transparent);
         }
     </style>
 </head>
 <body>
-    <div class="title">🏮 Đèn Kéo Quân - Phạm An 🏮</div>
+    <h1 class="title">🏮 Đèn Kéo Quân - Phạm An 🏮</h1>
     
     <div class="container">
         <div class="lantern" id="lantern">
-            <div class="light"></div>
+            <span class="light" aria-hidden="true"></span>
             
             <div class="face">
                 <img src="https://i.imgflip.com/2/30b1gx.jpg" alt="Meme 1">
@@ -184,43 +203,52 @@
     </div>
 
     <div class="instruction">
-        💡 Di chuột vào hình để dừng đèn<br>
-        Rê chuột ra để đèn quay tiếp
+        <button id="toggle-rotation" type="button" aria-controls="lantern" aria-pressed="false">Tạm dừng</button>
+        💡 Dùng nút để dừng hoặc tiếp tục quay.<br>
+        Di chuột vào hình để tạm dừng khi xem.
     </div>
 
     <script>
         const lantern = document.getElementById('lantern');
         const faces = document.querySelectorAll('.face');
 
-        // Add hover event to each face
+        const toggle = document.getElementById('toggle-rotation');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let paused = reducedMotion.matches;
+        let hovered = false;
+
+        function updateRotation() {
+            const stopped = paused || hovered;
+            lantern.classList.toggle('paused', stopped);
+            lantern.classList.toggle('playing', !stopped);
+            toggle.setAttribute('aria-pressed', String(paused));
+            toggle.textContent = paused ? 'Tiếp tục' : 'Tạm dừng';
+        }
+
+        toggle.addEventListener('click', () => {
+            paused = !paused;
+            updateRotation();
+        });
+
         faces.forEach(face => {
-            face.addEventListener('mouseenter', () => {
-                lantern.classList.add('paused');
+            face.addEventListener('pointerenter', event => {
+                if (event.pointerType !== 'mouse') return;
+                hovered = true;
+                updateRotation();
             });
-
-            face.addEventListener('mouseleave', () => {
-                lantern.classList.remove('paused');
-            });
-        });
-
-        // Add click event for interaction
-        faces.forEach((face, index) => {
-            face.addEventListener('click', () => {
-                console.log(`Clicked on face ${index + 1}`);
-                // You can add more interactions here
+            face.addEventListener('pointerleave', event => {
+                if (event.pointerType !== 'mouse') return;
+                hovered = false;
+                updateRotation();
             });
         });
 
-        // Optional: Add mouse wheel control
-        document.addEventListener('wheel', (e) => {
-            const currentRotation = lantern.style.transform || 'rotateY(0deg)';
-            const rotationValue = parseInt(currentRotation.match(/\d+/)?.[0] || 0);
-            const newRotation = rotationValue + (e.deltaY > 0 ? 10 : -10);
-            
-            if (lantern.classList.contains('paused')) {
-                lantern.style.transform = `rotateY(${newRotation}deg)`;
-            }
+        reducedMotion.addEventListener('change', event => {
+            paused = event.matches;
+            updateRotation();
         });
+
+        updateRotation();
     </script>
 </body>
 </html>
